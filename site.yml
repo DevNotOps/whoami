@@ -1,4 +1,4 @@
----
+ansible/---
 - name: Deploy whoami container
   hosts: whoami_hosts
   become: true
