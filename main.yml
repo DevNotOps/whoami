@@ -1,0 +1,8 @@
+---
+whoami_repo_url: https://github.com/DevNotOps/whoami.git
+whoami_repo_version: main
+whoami_src_dir: /opt/whoami
+whoami_image: whoami
+whoami_tag: "{{ whoami_repo_version }}"
+whoami_container_name: whoami
+whoami_host_port: 8080

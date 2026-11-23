@@ -1,0 +1,6 @@
+---
+- name: Deploy whoami container
+  hosts: whoami_hosts
+  become: true
+  roles:
+    - whoami
