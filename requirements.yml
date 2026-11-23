@@ -1,2 +1,2 @@
-collections:
+ansible/collections:
   - name: community.docker
