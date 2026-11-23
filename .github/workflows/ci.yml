@@ -31,9 +31,9 @@ jobs:
         run: docker build -t whoami:ci --build-arg APP_VERSION=${{ github.sha }} .
       - name: Smoke test container
         run: |
-          docker run -d --name w -p 8080:8080 whoami:ci
+          docker run -d --name whoami-ci -p 8080:8080 whoami:ci
           for i in $(seq 1 20); do curl -fs localhost:8080/health && break || sleep 1; done
           curl -fs localhost:8080/ | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['service']=='whoami', d; print(d)"
       - name: Container logs
         if: failure()
-        run: docker logs w || true
+        run: docker logs whoami-ci || true
