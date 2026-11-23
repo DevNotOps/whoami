@@ -40,4 +40,5 @@ Variables (see `ansible/roles/whoami/defaults/main.yml`): `whoami_repo_version`,
 - `pytest` passes (2 tests) and `flake8` is clean.
 - The app was run under gunicorn and both endpoints returned the expected JSON.
 - `ansible-playbook --syntax-check` passes.
-- Not yet verified by the author: the Docker image build and the full playbook run against a real server (no Docker host was available when this was written). CI builds the image and smoke tests it on every push; check the Actions tab.
+- CI (GitHub Actions) is green: it builds the Docker image and smoke tests the running container (`/health` and `/`).
+- Not yet verified: a full playbook run against a real server (no target host was available when this was written). The playbook passes `--syntax-check` only.
