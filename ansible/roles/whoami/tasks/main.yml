@@ -1,0 +1,51 @@
+---
+- name: Install Docker and git
+  ansible.builtin.package:
+    name:
+      - docker.io
+      - git
+      - python3-docker
+    state: present
+
+- name: Ensure Docker is running and enabled
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Fetch application source
+  ansible.builtin.git:
+    repo: "{{ whoami_repo_url }}"
+    dest: "{{ whoami_src_dir }}"
+    version: "{{ whoami_repo_version }}"
+  register: whoami_source
+
+- name: Build image
+  community.docker.docker_image:
+    name: "{{ whoami_image }}"
+    tag: "{{ whoami_tag }}"
+    source: build
+    build:
+      path: "{{ whoami_src_dir }}"
+      args:
+        APP_VERSION: "{{ whoami_tag }}"
+    force_source: "{{ whoami_source.changed }}"
+
+- name: Run container
+  community.docker.docker_container:
+    name: "{{ whoami_container_name }}"
+    image: "{{ whoami_image }}:{{ whoami_tag }}"
+    state: started
+    restart_policy: unless-stopped
+    published_ports:
+      - "{{ whoami_host_port }}:8080"
+
+- name: Wait for health endpoint
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ whoami_host_port }}/health"
+    status_code: 200
+  register: whoami_health
+  retries: 10
+  delay: 2
+  until: whoami_health.status == 200
+  changed_when: false
